@@ -1,0 +1,12 @@
+POST http://localhost:3001/api/vacantes
+Content-Type: application/json
+
+{
+    "name_company":"Facebook",
+    "url_comp": "Facebook.com",
+    "cuidad": "San francisco",
+    "modo": "Remoto",
+    "tipo": "full time",
+    "titulo_vacante": "Data Analytics",
+    "descripcion": "Lorem insup"
+}
