@@ -1,0 +1,12 @@
+PUT http://localhost:3001/api/jobs/6195c2ca6281b6e951a17767
+Content-Type: application/json
+
+{
+    "name_company":"Prueba 3",
+    "url_comp": "Prueba3.com",
+    "cuidad": "ssssss",
+    "modo": "ssssssssss",
+    "tipo": "sssssssss",
+    "titulo_vacante": "sssssssss",
+    "descripcion": "ssssssssss sssssss"
+}

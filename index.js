@@ -1,106 +1,106 @@
-
+require('dotenv').config()
+require('./mongo')
 
 const express = require('express')
 const cors = require('cors')
 const app = express()
 const logger = require('./loggerMiddleware')
-
+const JobModel = require('./models/job')
+const notFound = require('./middleware/notFound.js')
+const handleErrors=require('./middleware/handleErrors.js')
+const { Mongoose } = require('mongoose')
 app.use(cors())
 
 app.use(express.json())
 app.use(logger)
 
-
-let vacantes =[{
-    "id_vacante": 1,
-    "name_company":"Google",
-    "url_comp": "Google.com",
-    "hora_post": "17/11/2021",
-    "cuidad": "San francisco",
-    "modo": "Presencial",
-    "tipo": "full time",
-    "titulo_vacante": "Frontend",
-    "descripcion": "Lorem insup"
-},{
-    "id_vacante": 2,
-    "name_company":"Linkdin",
-    "url_comp": "Linkdin.com",
-    "hora_post": "18/11/2021",
-    "cuidad": "Santo Domingo",
-    "modo": "Presencial",
-    "tipo": "Part time",
-    "titulo_vacante": "Backend",
-    "descripcion": "Lorem insup"
-},{
-    "id_vacante": 3,
-    "name_company":"Facebook",
-    "url_comp": "Facebook.com",
-    "hora_post": "02/11/2021",
-    "cuidad": "San francisco",
-    "modo": "Remoto",
-    "tipo": "full time",
-    "titulo_vacante": "Data Analytics",
-    "descripcion": "Lorem insup"
-}
-
-]
-
-
 app.get("/", (request, response)=>{
     response.send("<h1>Hello</h1>")
 })
 
-app.get("/api/vacantes", (request, response)=>{
-    response.json(vacantes)
-})
-
-app.get("/api/vacantes/:id", (request, response)=>{
-    const id = Number(request.params.id)
-    const vacante = vacantes.find(vac => vac.id_vacante === id)
-
-    if(vacante){
-        response.json(vacante)
-    }
-    else{
-        response.status(404).end()
-    }
-})
-
-app.delete("/api/vacantes/:id", (request, response)=>{
-    const id = Number(request.params.id)
-    const vacante = vacantes.filter(vac => vac.id_vacante !== id)
-    response.status(204).end()
-})
-
-
-app.post("/api/vacantes", (request, response)=>{
-    const job = request.body
-console.log(job)
-    const ids = vacantes.map(job=>job.id_vacante)
-    const maxId = Math.max(...ids)
-    const newJob = {
-        id_vacante: maxId+1,
-        "name_company":job.name_company,
-    "url_comp": job.url_comp,
-    "hora_post": new Date().toDateString(),
-    "cuidad": job.cuidad,
-    "modo": job.modo,
-    "tipo": job.tipo,
-    "titulo_vacante": job.titulo_vacante,
-    "descripcion": job.descripcion
-    }
-    vacantes = [...vacantes,newJob]
-    response.status(201).json(job)
-})
-
-app.use((request, response)=>{
-    response.status(404).json({
-        error: 'Not found'
+app.get("/api/jobs/all", (request, response)=>{
+    JobModel.find({}).then(jobs=>{
+        const {_id, __v, ...restOfJobs} = jobs
+        return{
+            ...response.json(jobs),
+            id: _id
+        }
     })
 })
 
+app.get("/api/jobs/:id", (request, response, next)=>{
+    const {id} = request.params
+    const job = JobModel.findById(id).then(searchJob=>{
+        return searchJob?
+            response.json(searchJob)
+            : response.status(404).end()
+    }).catch(err=>{
+        next(err)
+    })    
+})
 
-const PORT = process.env.PORT || 3001
+app.delete("/api/jobs/:id", (request, response, next)=>{
+    const {id} = request.params
+    JobModel.findByIdAndDelete(id).then(()=>{
+    response.status(204).end()
+    }).catch(err=>{
+        next(err)
+    })
+})
+
+app.post("/api/jobs", (req, res)=>{
+    const jobPost = req.body
+    
+    if (Object.keys(jobPost).length === 0 || jobPost === null){
+        return res.status(400).json({
+            error: 'required "content" field is missing',
+            contentstatus: !jobPost.content,
+            contentText: jobPost
+        })
+    }
+ 
+    const newJob = new JobModel({
+        "name_company":jobPost.name_company,
+        "url_comp": jobPost.url_comp,
+        "hora_post": new Date(),
+        "cuidad": jobPost.cuidad,
+        "modo": jobPost.modo,
+        "tipo": jobPost.tipo,
+        "titulo_vacante": jobPost.titulo_vacante,
+        "descripcion": jobPost.descripcion
+    })
+    newJob.save().then(savedPost=>{
+        res.json(savedPost)
+    })
+})
+
+app.put("/api/jobs/:id", (req, res, next)=>{    
+    const {id} = req.params
+    const jobPost = req.body
+
+    const editJob = {
+        "name_company":jobPost.name_company,
+        "url_comp": jobPost.url_comp,
+        "cuidad": jobPost.cuidad,
+        "modo": jobPost.modo,
+        "tipo": jobPost.tipo,
+        "titulo_vacante": jobPost.titulo_vacante,
+        "descripcion": jobPost.descripcion
+    }
+
+   JobModel.findByIdAndUpdate(id, editJob, {new:true})
+   .then(result=>{
+    res.json(result)
+   })
+})
+
+
+
+app.use(notFound)
+app.use(handleErrors)
+
+const PORT = process.env.PORT 
 app.listen(PORT, ()=>{
     console.log(`Server running on port ${PORT}`)
 })
+

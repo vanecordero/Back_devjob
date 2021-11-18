@@ -1,1 +1,1 @@
-DELETE http://localhost:3001/api/vacantes/2
+DELETE http://localhost:3001/api/jobs/6195c23a480ef2749d9b208b
