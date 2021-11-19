@@ -14,10 +14,10 @@ app.use(express.json())
 app.use(logger)
 
 app.get("/", (request, response)=>{
-    response.send("<h1>Hello World from Node.js</h1>")
+    response.status(404).end()
 })
 
-app.get("/api/jobs/all", (request, response)=>{
+app.get("/api/jobs", (request, response)=>{
     JobModel.find({}).then(jobs=>{
         const {_id, __v, ...restOfJobs} = jobs
         return{
