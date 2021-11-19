@@ -1,1 +1,1 @@
-GET http://localhost:3001/api/jobs/all
+GET https://nameless-springs-73325.herokuapp.com/api/jobs/all

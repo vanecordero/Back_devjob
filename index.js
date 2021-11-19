@@ -15,7 +15,7 @@ app.use(express.json())
 app.use(logger)
 
 app.get("/", (request, response)=>{
-    response.send("<h1>Hello</h1>")
+    response.send("<h1>Hello World from Node.js</h1>")
 })
 
 app.get("/api/jobs/all", (request, response)=>{
