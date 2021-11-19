@@ -8,7 +8,6 @@ const logger = require('./loggerMiddleware')
 const JobModel = require('./models/job')
 const notFound = require('./middleware/notFound.js')
 const handleErrors=require('./middleware/handleErrors.js')
-const { Mongoose } = require('mongoose')
 app.use(cors())
 
 app.use(express.json())
