@@ -1,13 +1,14 @@
 POST http://localhost:3001/api/jobs
 Content-Type: application/json
 
-{
-    "name_company":"Prueba 10",
-    "url_comp": "Prueba.com",
-    "cuidad": "San francisco",
+{    
+    "name_company":"Facebook",
+    "url_comp": "facebook.com",
+    "cuidad": "Chicago",
     "modo": "Remoto",
-    "tipo": "full time",
-    "titulo_vacante": "Data",
-    "descripcion": "Lorem insup"
+    "tipo": "Part time",
+    "titulo_vacante": "DevOps",
+    "descripcion": "blablablablabla",
+    "userId": "619ad1773a332e798e6010bd"
 }
 

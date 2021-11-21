@@ -1,1 +1,0 @@
-GET https://nameless-springs-73325.herokuapp.com/api/jobs
