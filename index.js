@@ -10,7 +10,7 @@ const notFound = require('./middleware/notFound.js')
 const handleErrors=require('./middleware/handleErrors.js')
 
 const usersRouter = require('./controllers/users')
-//const { response } = require('express')
+const loginRouter = require('./controllers/login')
 const User = require('./models/User')
 
 
@@ -116,6 +116,7 @@ app.put("/api/jobs/:id", (req, res, next)=>{
 })
 
 app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
 app.use(notFound)
 app.use(handleErrors)

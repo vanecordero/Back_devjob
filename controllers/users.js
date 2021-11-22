@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/User')
 
+
 usersRouter.get('/', async (req, res)=>{
   const users = await User.find({}).populate('job', {
     "name_company": 1,
